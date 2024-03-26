@@ -1,21 +1,20 @@
+
 from bs4 import BeautifulSoup
-
-def remove_classes(html_file):
-    with open(html_file, 'r') as f:
+html_file ="eg.html"
+exception ="mt-content-container"
+# Our html string we want to remove the class attribute from
+with open(html_file, 'r',encoding="utf8") as f:
         html_content = f.read()
+f.close()        
+soup = BeautifulSoup(html_content, 'html.parser')
+for link in soup.find_all():
+    if link.attrs.get('class'):
+        if exception not in link.attrs.get('class'):
+            link.attrs.pop("class",None)
+            print(link.attrs.get('class'))
+   
 
-    # Parse HTML content
-    soup = BeautifulSoup(html_content, 'html.parser')
-
-    # Find all elements with classes and remove classes
-    for tag in soup.find_all(True, class_=True):
-        tag.attrs.pop("class", None)
-
-    # Write modified HTML content back to file
-    with open(html_file, 'w') as f:
+with open("output.html", 'w',encoding="utf8") as f:
         f.write(str(soup))
 
-if __name__ == "__main__":
-    html_file = input("Enter HTML file path: ")
-    remove_classes(html_file)
-    print("Classes removed from HTML elements successfully.")
+
