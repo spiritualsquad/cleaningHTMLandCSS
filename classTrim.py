@@ -1,6 +1,7 @@
 
 from bs4 import BeautifulSoup
 html_file ="eg.html"
+
 exception ="mt-content-container"
 # Our html string we want to remove the class attribute from
 with open(html_file, 'r',encoding="utf8") as f:
