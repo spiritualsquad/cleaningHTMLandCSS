@@ -105,6 +105,8 @@ exception_entry.grid(row=1, column=1)
 
 exception_css = tk.Entry(root, width=50)
 exception_css.grid(row=2, column=1)
+css_exception_label = tk.Label(root, text="Select css file to keep the attributes:")
+css_exception_label.grid(row=2, column=0)
 browse_button_exception = tk.Button(root, text="Browse", command=browse_files_css)
 browse_button_exception.grid(row=2, column=2)
 
