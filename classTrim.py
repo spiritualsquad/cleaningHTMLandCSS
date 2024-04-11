@@ -4,6 +4,12 @@ from bs4 import BeautifulSoup
 import os
 import cssutils
 
+last_folder_path = ""
+# Function to update the last accessed folder path
+def update_last_folder_path(path):
+    global last_folder_path
+    last_folder_path = path
+
 def remove_classes(html_file, exceptions):
     with open(html_file, 'r', encoding="utf8") as f:
         html_content = f.read()
@@ -12,11 +18,13 @@ def remove_classes(html_file, exceptions):
     for link in soup.find_all():
         if link.attrs.get('class'):
             value_class = ''.join(link.attrs.get('class'))
-            if value_class not in exceptions:
+            result_class = value_class.startswith("textbox")
+            if value_class not in exceptions and result_class == False:
                 link.attrs.pop("class", None)
         if link.attrs.get('id'):
             value_id = ''.join(link.attrs.get('id'))
-            if value_id not in exceptions:
+            result_id = value_id.startswith("textbox")
+            if value_id not in exceptions and result_id == False:
                 link.attrs.pop("id", None)
             
 
@@ -29,16 +37,22 @@ def remove_classes(html_file, exceptions):
         f.write(str(soup.prettify()))
     return cleaned_filename
         
+# Function to handle browsing for HTML files
 def browse_files():
-    filename = filedialog.askopenfilename(initialdir="/", title="Select HTML File",
+    global last_folder_path
+    filename = filedialog.askopenfilename(initialdir=last_folder_path, title="Select HTML File",
                                           filetypes=(("HTML files", "*.html*"), ("all files", "*.*")))
     entry.delete(0, tk.END)
     entry.insert(0, filename)
+    update_last_folder_path(os.path.dirname(filename))
+# Function to handle browsing for CSS files
 def browse_files_css():
-    filename = filedialog.askopenfilename(initialdir="/", title="Select CSS File",
+    global last_folder_path
+    filename = filedialog.askopenfilename(initialdir=last_folder_path, title="Select CSS File",
                                           filetypes=(("CSS files", "*.css*"), ("all files", "*.*")))
     exception_css.delete(0, tk.END)
     exception_css.insert(0, filename)
+    update_last_folder_path(os.path.dirname(filename))
 def process():
     html_file = entry.get()
     file_path = exception_css.get()
@@ -57,31 +71,39 @@ def process():
 
 def extract_classes_and_ids(css):
     classes_and_ids = []
+    try:
+        # Parse CSS
+        sheet = cssutils.parseString(css)
 
-    # Parse CSS
-    sheet = cssutils.parseString(css)
+        # Extract class and ID selectors
+        for rule in sheet:
+            if rule.type == rule.STYLE_RULE:
+                selectors = rule.selectorText.split(',')
+                for selector in selectors:
+                    selector_parts = selector.strip().split()
+                    for part in selector_parts:
+                        if part.startswith('.'):
+                            class_name = part[1:]
+                            classes_and_ids.append(class_name)
+                        elif part.startswith('#'):
+                            id_name = part[1:]
+                            classes_and_ids.append(id_name)
 
-    # Extract class and ID selectors
-    for rule in sheet:
-        if rule.type == rule.STYLE_RULE:
-            selectors = rule.selectorText.split(',')
-            for selector in selectors:
-                selector_parts = selector.strip().split()
-                for part in selector_parts:
-                    if part.startswith('.'):
-                        class_name = part[1:]
-                        classes_and_ids.append(class_name)
-                    elif part.startswith('#'):
-                        id_name = part[1:]
-                        classes_and_ids.append(id_name)
+        return classes_and_ids
+    except:
+        return classes_and_ids
 
-    return classes_and_ids
 
 def read_css_from_file(file_path):
-    with open(file_path, 'r') as file:
-        css = file.read()
-    return css
 
+    try:
+        with open(file_path, 'r') as file:
+            css = file.read()
+        return css
+    except: 
+        return None
+
+        
 
 
 # Create main window
