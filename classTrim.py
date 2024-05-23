@@ -4,6 +4,7 @@ from bs4 import BeautifulSoup
 import os
 import cssutils
 
+
 last_folder_path = ""
 # Function to update the last accessed folder path
 def update_last_folder_path(path):
