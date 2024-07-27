@@ -51,3 +51,6 @@ The **HTML and CSS Cleaning Tool** is a Python application designed to efficient
 1. **Selecting Files**: Use the interface to browse and select your HTML and CSS files.
 2. **Entering Exceptions**: Add any classes or IDs you want to retain, separated by commas, in the exception field.
 3. **Processing**: Hit the "Process" button to generate a cleaned HTML file with unwanted attributes removed.
+
+
+### Contributer - [Arsh Jassal].(https://github.com/arsh-jassal)
