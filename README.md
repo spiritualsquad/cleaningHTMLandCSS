@@ -1,7 +1,3 @@
-Here's a tailored description for your GitHub repository, based on the URL you provided:
-
----
-
 # HTML and CSS Cleaning Tool
 
 ### Description
